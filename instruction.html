@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- mobile friendly -->
+    <title>How to Play</title> 
+
+    <link rel="icon" type="image/png" href="f2.png"> 
+    <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet"> <!-- fancy font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap" rel="stylesheet"> <!-- normal font -->
+
+    <style>
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100%;
+    background: url("f3.jpg") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 12px double #b8927c;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+.card {
+    background: rgba(255, 243, 235, 0.85);
+    width: 75%;
+    max-width: 850px;
+    padding: 30px 40px;
+    border-radius: 20px;
+    border: 3px solid #b8927c;
+    box-shadow: 0 0 20px rgba(0,0,0,0.15);
+    display: flex;
+    justify-content: space-between;
+    /* oops, still need to add align-items maybe */
+}
+
+.content {
+    width: 60%;
+    /* more styles to do here */
+}
+
+h1 {
+    font-family: "Allura", cursive;
+    font-size: 5rem;
+    color: #b8927c;
+    position: relative;
+    margin: 0 0 20px 0;
+    text-align: left;
+
+    
+  </style>
+</head>
+<body>
+    <div class="card"> 
+        <div class="content"> <!-- left side with text -->
+            <h1>How to Play</h1>
+                        <ul> 
+                <li>Flip the cards one by one.</li> <!-- step 1 -->
+                <li>Try to find matching rabbit pairs.</li> <!-- step 2 -->
+                <li>Remember the positions carefully.</li> <!-- step 3 -->
+                <li>Match all pairs to win the game.</li> <!-- step 4 -->
+                <li>Enjoy the cute bunny theme!</li> <!-- step 5 -->
+            </ul>
+            <button onclick="location.href='index.html'">Back</button> <!-- back button -->
+        </div>
+        <div class="image-box"> <!-- right side with image -->
+            <img src="f4.svg" alt="Bunny Icon"> <!-- bunny icon -->
+        </div>
+    </div> <!-- end of main container -->
+</body>
+</html>

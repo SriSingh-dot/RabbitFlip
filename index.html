@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rabbit Flip</title> <!-- title and icon added -->
 
+<link rel="icon" type="image/png" href="f2.png"> <!-- bunny icon cute -->
+    <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
+
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100%;
+            background: url("f1.jpg") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 30px;
+            border: 12px double #b8927c;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            position: relative;
+            font-family: "Allura", cursive;
+            font-size: 7.5rem;
+            color: #b8927c;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            margin: 0;
+        }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 4px;
+            background: #b8927c;
+            border-radius: 50px;
+            box-shadow: 0 0 8px rgba(184, 146, 124, 0.6);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            font-family: "Poppins", sans-serif;
+            padding: 12px 28px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border: 3px solid #b8927c;
+            border-radius: 12px;
+            background: transparent;
+            color: #b8927c;
+            transition: 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #ffd9b3;
+            color: #8b5e3c;
+            border: 3px solid #b8927c;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+
+<body>
+<h1>Rabbit Flip</h1> <!-- main heading -->
+
+<div class="btn-container"> <!-- buttons here -->
+    <button class="btn" onclick="location.href='flip.html'">Start</button>
+        <button class="btn" onclick="location.href='instruction.html'">How to Play</button>
+</div>
+</body>
+</html>
