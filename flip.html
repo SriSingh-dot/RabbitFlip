@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RabbitFlip - Round 1</title>
+<link rel="icon" type="image/png" href="f2.png">
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background: url("f5.jpg") no-repeat center center/cover;
+    font-family: 'Cherry Swash', cursive;
+}
+
+h1 {
+    text-align: center;
+    color: #b8927c;
+    margin: 20px 0 0 0;
+    font-size: 3rem;
+}
+
+.game-container {
+    width: 80%;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(4, 120px);
+    gap: 15px;
+    justify-content: center;
+}
+
+.card {
+    width: 120px;
+    height: 120px;
+    perspective: 800px;
+    cursor: pointer;
+}
+
+.inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.6s ease;
+    transform-style: preserve-3d;
+}
+
+.flipped .inner {
+    transform: rotateY(180deg);
+}
+
+.front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+}
+
+.front {
+    background: rgba(255, 245, 235, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #b8927c;
+    border: 3px solid #b8927c;
+}
+
+.back {
+    transform: rotateY(180deg);
+    background-size: cover;
+    background-position: center;
+    border: 3px solid #b8927c;
+    border-radius: 15px;
+}
+
+#stats {
+    position: fixed;
+    top: 20px; left: 20px;
+    background: rgba(255,243,235,0.9);
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    color: #b8927c;
+    border-radius: 15px;
+    border: 3px solid #b8927c;
+}
+
+#winPopup, #losePopup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: #fff6ee;
+    padding: 40px;
+    border-radius: 25px;
+    border: 4px solid #b8927c;
+    text-align: center;
+    width: 300px;
+    transition: 0.4s ease;
+    z-index: 999;
+}
+
+#winPopup.show, #losePopup.show {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#winPopup button, #losePopup button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    background: #b8927c;
+    color: white;
+    font-size: 1.1rem;
+}
+
+#loadingBunny {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    animation: hop 0.7s infinite ease-in-out alternate;
+    z-index: 1000;
+    display: none;
+}
+
+@keyframes hop {
+    0% { transform: translate(-50%, -50%) translateY(0); }
+    100% { transform: translate(-50%, -50%) translateY(-20px); }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Round 1</h1>
+
+<div id="stats">⏳ Time: <span id="time">02:00</span> •  Moves: <span id="moves">0</span></div>
+
+<img id="loadingBunny" src="bunny.png">
+
+<div id="winPopup">
+    <h2 style="color:#b8927c;">You Won! </h2>
+    <p style="color:#b8927c;">Great job!</p>
+    <button onclick="location.href='flip2.html'">Round 2 →</button>
+</div>
+
+<div id="losePopup">
+    <h2 style="color:#b8927c;">Time's Up! </h2>
+    <p style="color:#b8927c;">Better luck next time!</p>
+    <button onclick="location.reload()">Play Again</button>
+</div>
+
+<div class="game-container" id="game"></div>
+
+<script>
+const images = [
+    "r1.png","r1.png","r2.png","r2.png",
+    "r3.png","r3.png","r4.png","r4.png",
+    "r5.png","r5.png","r6.png","r6.png"
+];
+
+let flipped = [];
+let matched = 0;
+let moves = 0;
+let totalSeconds = 120;
+
+const game = document.getElementById("game");
+const winPopup = document.getElementById("winPopup");
+const losePopup = document.getElementById("losePopup");
+const loadingBunny = document.getElementById("loadingBunny");
+
+images.sort(() => Math.random() - 0.5);
+
+images.forEach(img => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.innerHTML = `
+        <div class="inner">
+            <div class="front">?</div>
+            <div class="back" style="background-image:url('${img}')"></div>
+        </div>
+    `;
+    card.addEventListener("click", () => {
+        if (card.classList.contains("flipped") || flipped.length === 2 || totalSeconds <= 0) return;
+
+        card.classList.add("flipped");
+        flipped.push(card);
+        moves++;
+        document.getElementById("moves").textContent = moves;
+
+        if (flipped.length === 2) {
+            let img1 = flipped[0].querySelector(".back").style.backgroundImage;
+            let img2 = flipped[1].querySelector(".back").style.backgroundImage;
+
+            if (img1 === img2) {
+                matched++;
+                flipped = [];
+
+                if (matched === 6) {
+                    setTimeout(() => winPopup.classList.add("show"), 600);
+                }
+            } else {
+                setTimeout(() => {
+                    flipped[0].classList.remove("flipped");
+                    flipped[1].classList.remove("flipped");
+                    flipped = [];
+                }, 700);
+            }
+        }
+    });
+    game.appendChild(card);
+});
+
+function formatTime(s) {
+    let m = Math.floor(s / 60);
+    let sec = s % 60;
+    return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+}
+
+document.getElementById("time").textContent = formatTime(totalSeconds);
+
+let timer = setInterval(() => {
+    if (totalSeconds > 0) {
+        totalSeconds--;
+        document.getElementById("time").textContent = formatTime(totalSeconds);
+    } else {
+        clearInterval(timer);
+        losePopup.classList.add("show");
+    }
+}, 1000);
+
+function showLoader() {
+    loadingBunny.style.display = "block";
+    setTimeout(() => loadingBunny.style.display = "none", 1200);
+}
+showLoader();
+</script>
+
+</body>
+</html>

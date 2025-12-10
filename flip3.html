@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RabbitFlip - Round 3</title>
+<link rel="icon" type="image/png" href="f2.png">
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background: url("f5.jpg") no-repeat center center/cover;
+    font-family: 'Cherry Swash', cursive;
+    border: 12px double #b8927c;
+    min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    color: #b8927c;
+    margin: 20px 0 0 0;
+    font-size: 3rem;
+}
+
+.game-container {
+    width: 85%;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(5, 95px);
+    gap: 12px;
+    justify-content: center;
+}
+
+.card {
+    width: 95px;
+    height: 95px;
+    perspective: 800px;
+    cursor: pointer;
+}
+.inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.6s ease;
+    transform-style: preserve-3d;
+}
+.flipped .inner {
+    transform: rotateY(180deg);
+}
+.front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+}
+.front {
+    background: rgba(255, 245, 235, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    color: #b8927c;
+    border: 3px solid #b8927c;
+}
+.back {
+    transform: rotateY(180deg);
+    background-size: cover;
+    background-position: center;
+    border: 3px solid #b8927c;
+    border-radius: 12px;
+}
+#stats {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(255,243,235,0.9);
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    color: #b8927c;
+    border-radius: 15px;
+    border: 3px solid #b8927c;
+}
+#winPopup, #losePopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: #fff6ee;
+    padding: 40px;
+    border-radius: 25px;
+    border: 4px solid #b8927c;
+    text-align: center;
+    width: 300px;
+    transition: 0.4s ease;
+    z-index: 999;
+}
+#winPopup.show, #losePopup.show {
+    transform: translate(-50%, -50%) scale(1);
+}
+#winPopup button, #losePopup button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    background: #b8927c;
+    color: white;
+    font-size: 1.1rem;
+}
+@keyframes shake {
+ 0% { transform: translateX(0); }
+ 20% { transform: translateX(-10px); }
+ 40% { transform: translateX(10px); }
+ 60% { transform: translateX(-10px); }
+  80% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+.shake {
+    animation: shake 0.5s ease;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Round 3</h1>
+<div id="stats">⏳ <span id="time">02:00</span> •  Moves: <span id="moves">0</span></div>
+<div class="game-container" id="game"></div><div id="winPopup"><h2 style="color:#b8927c;">You Cleared Round 3! </h2>
+<p style="color:#b8927c;">You're getting stronger!</p>
+<button onclick="location.href='rule.html'">Next →</button>
+</div><div id="losePopup">
+<h2 style="color:#b8927c;">Time's Up! </h2>
+<p style="color:#b8927c;">Try again!</p>
+<button onclick="location.reload()">Play Again</button>
+</div><script>
+let images = [
+ "r1.png","r1.png","r2.png","r2.png",
+ "r3.png","r3.png","r4.png","r4.png",
+ "r5.png","r5.png","r6.png","r6.png",
+ "r7.png","r7.png","r8.png","r8.png",
+ "r9.png","r9.png","r10.png","r10.png"
+];
+images.sort(() => Math.random() - 0.5);
+let flipped = [];
+let matched = 0;
+let moves = 0;
+let wrongStreak = 0;
+let totalSeconds = 120;
+const game = document.getElementById("game");
+const winPopup = document.getElementById("winPopup");
+const losePopup = document.getElementById("losePopup");
+function loadCards() {
+    game.innerHTML = "";
+    images.forEach(img => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+            <div class="inner">
+                <div class="front">?</div>
+                <div class="back" style="background-image:url('${img}')"></div>
+            </div>
+        `;
+        card.addEventListener("click", () => {
+            if (card.classList.contains("flipped") || flipped.length === 2 || totalSeconds <= 0) return;
+
+            card.classList.add("flipped");
+            flipped.push(card);
+            moves++;
+            document.getElementById("moves").textContent = moves;
+
+            if (flipped.length === 2) {
+                let img1 = flipped[0].querySelector(".back").style.backgroundImage;
+                let img2 = flipped[1].querySelector(".back").style.backgroundImage;
+
+         if (img1 === img2) {
+                    matched++;
+                    wrongStreak = 0;
+                    flipped = [];
+                    if (matched === 10) {
+                        clearInterval(timer);
+                        setTimeout(() => winPopup.classList.add("show"), 500);
+                    }
+         } else {
+        wrongStreak++;
+      setTimeout(() => {
+           flipped[0].classList.remove("flipped");
+         flipped[1].classList.remove("flipped");
+                        flipped = [];
+                        if (wrongStreak === 5) {
+                      game.classList.add("shake");
+                     setTimeout(() => game.classList.remove("shake"), 600);
+                   images.sort(() => Math.random() - 0.5);
+               loadCards();
+                wrongStreak = 0;
+                        }
+            }, 700);
+         }
+             }
+        });
+        game.appendChild(card);
+    });
+}
+loadCards();
+function formatTime(s) {
+    let m = Math.floor(s / 60);
+    let sec = s % 60;
+    return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+}
+document.getElementById("time").textContent = formatTime(totalSeconds);
+let timer = setInterval(() => {
+    if (totalSeconds > 0) {
+        totalSeconds--;
+        document.getElementById("time").textContent = formatTime(totalSeconds);
+    } else {
+        clearInterval(timer);
+        losePopup.classList.add("show");
+    }
+}, 1000);
+</script>
+</body>
+</html>
